@@ -1,14 +1,12 @@
 package ca.bcit.ass2.shin_lee;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v4.view.MenuItemCompat;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -16,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private ShareActionProvider shareActionProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 49.0,
                 1,
                 "2018-11-01");
-
     }
 
     @Override
@@ -65,11 +60,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean addDialog() {
+
+
         new AlertDialog.Builder(this)
                 .setTitle("Add a New Person!")
                 .setView(initLayout())
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
+//                        Log.e("TETETEE", firstName.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -85,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
 
         final EditText firstName = new EditText(this);
+        firstName.setId(R.id.firstName);
         firstName.setHint("First Name");
 
         final EditText lastName = new EditText(this);
         lastName.setHint("Last Name");
+        firstName.setId(R.id.lastName);
 
         final EditText DOB = new EditText(this);
         DOB.setHint("YYYY-MM-DD");
