@@ -6,35 +6,36 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    SQLiteOpenHelper helper;
+    EditText firstName;
+    EditText lastName;
+    EditText DOB;
+    EditText street;
+    EditText city;
+    EditText province;
+    EditText postalCode;
+    EditText country;
+    EditText lat;
+    EditText lng;
+    EditText naughty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        helper = new DB(this);
 
-        SQLiteOpenHelper helper = new DB(this);
-        ((DB) helper).add("John",
-                "Doe",
-                "2018-11-01",
-                "randomStreet",
-                "Vancouver",
-                "BC",
-                "V2Y 111",
-                "Canada",
-                120.2,
-                49.0,
-                1,
-                "2018-11-01");
     }
 
     @Override
@@ -60,14 +61,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean addDialog() {
-
-
         new AlertDialog.Builder(this)
                 .setTitle("Add a New Person!")
                 .setView(initLayout())
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-//                        Log.e("TETETEE", firstName.getText().toString());
+                        Map<String, String> userInputs = getAddInputs();
+                        ((DB) helper).add(
+                                userInputs.get("firstName"),
+                                userInputs.get("lastName"),
+                                userInputs.get("DOB"),
+                                userInputs.get("street"),
+                                userInputs.get("city"),
+                                userInputs.get("province"),
+                                userInputs.get("postalCode"),
+                                userInputs.get("country"),
+                                Double.parseDouble(userInputs.get("lat")),
+                                Double.parseDouble(userInputs.get("lng")),
+                                userInputs.get("naughty"));
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -82,40 +93,49 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        final EditText firstName = new EditText(this);
-        firstName.setId(R.id.firstName);
+        firstName = new EditText(this);
         firstName.setHint("First Name");
+        firstName.setId(R.id.firstName);
 
-        final EditText lastName = new EditText(this);
+        lastName = new EditText(this);
         lastName.setHint("Last Name");
-        firstName.setId(R.id.lastName);
+        lastName.setId(R.id.lastName);
 
-        final EditText DOB = new EditText(this);
+        DOB = new EditText(this);
         DOB.setHint("YYYY-MM-DD");
+        DOB.setId(R.id.DOB);
 
-        final EditText street = new EditText(this);
+        street = new EditText(this);
         street.setHint("Street");
+        street.setId(R.id.street);
 
-        final EditText city = new EditText(this);
+        city = new EditText(this);
         city.setHint("city");
+        city.setId(R.id.city);
 
-        final EditText province = new EditText(this);
+        province = new EditText(this);
         province.setHint("province");
+        province.setId(R.id.DOB);
 
-        final EditText postalCode = new EditText(this);
+        postalCode = new EditText(this);
         postalCode.setHint("postalCode");
+        postalCode.setId(R.id.postalCode);
 
-        final EditText country = new EditText(this);
+        country = new EditText(this);
         country.setHint("Country");
+        country.setId(R.id.country);
 
-        final EditText lat = new EditText(this);
+        lat = new EditText(this);
         lat.setHint("Latitude");
+        lat.setId(R.id.lat);
 
-        final EditText lng = new EditText(this);
+        lng = new EditText(this);
         lng.setHint("Longitude");
+        lng.setId(R.id.lng);
 
-        final EditText naughty = new EditText(this);
+        naughty = new EditText(this);
         naughty.setHint("Naughty? (Y/N)");
+        naughty.setId(R.id.naughty);
 
         layout.addView(firstName);
         layout.addView(lastName);
@@ -130,5 +150,21 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(naughty);
 
         return layout;
+    }
+
+    Map<String, String> getAddInputs() {
+        Map<String, String> userInputs = new HashMap<>();
+        userInputs.put("firstName", firstName.getText().toString());
+        userInputs.put("lastName", lastName.getText().toString());
+        userInputs.put("DOB", DOB.getText().toString());
+        userInputs.put("street", street.getText().toString());
+        userInputs.put("city", city.getText().toString());
+        userInputs.put("province", province.getText().toString());
+        userInputs.put("postalCode", postalCode.getText().toString());
+        userInputs.put("country", country.getText().toString());
+        userInputs.put("lat", lat.getText().toString());
+        userInputs.put("lng", lng.getText().toString());
+        userInputs.put("naughty", naughty.getText().toString());
+        return userInputs;
     }
 }

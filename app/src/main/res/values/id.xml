@@ -2,4 +2,13 @@
 <resources>
     <item name="firstName" type="id" />
     <item name="lastName" type="id" />
+    <item name="DOB" type="id" />
+    <item name="street" type="id" />
+    <item name="city" type="id" />
+    <item name="province" type="id" />
+    <item name="postalCode" type="id" />
+    <item name="country" type="id" />
+    <item name="lat" type="id" />
+    <item name="lng" type="id" />
+    <item name="naughty" type="id" />
 </resources>

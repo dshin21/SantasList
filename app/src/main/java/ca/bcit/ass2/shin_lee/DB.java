@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class DB extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "SANTASLIST.sqlite";
@@ -52,7 +56,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public long add(String firstName, String lastName, String birthday, String street, String city, String province,
-                    String postalCode, String country, double lat, double lng, int isNaughty, String dateCreated) {
+                    String postalCode, String country, double lat, double lng, String isNaughty) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("FirstName", firstName);
@@ -65,8 +69,15 @@ public class DB extends SQLiteOpenHelper {
         values.put("Country", country);
         values.put("Latitude", lat);
         values.put("Longitude", lng);
-        values.put("IsNaughty", isNaughty);
-        values.put("DateCreated", dateCreated);
+        if (isNaughty.equals("Y"))
+            values.put("IsNaughty", 1);
+        if (isNaughty.equals("N"))
+            values.put("IsNaughty", 0);
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD");
+        values.put("DateCreated", df.format(c));
+
         long id = db.insert("SANTASLIST", null, values);
         db.close();
 
