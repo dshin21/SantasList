@@ -75,7 +75,7 @@ public class DB extends SQLiteOpenHelper {
             values.put("IsNaughty", 0);
 
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD");
+        SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd");
         values.put("DateCreated", df.format(c));
 
         long id = db.insert("SANTASLIST", null, values);
