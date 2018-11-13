@@ -53,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -168,3 +165,9 @@ public class MainActivity extends AppCompatActivity {
         return userInputs;
     }
 }
+
+//TODO:
+    // listview + array adaptor
+        // think about how to display the info
+    // search
+        // think about how to display the info

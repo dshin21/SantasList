@@ -7,11 +7,4 @@
         android:icon="@drawable/baseline_star_rate_black_18dp"
         android:title="Search"
         app:showAsAction="always" />
-
-    <!-- Settings, should always be in the overflow -->
-    <!--<item-->
-        <!--android:id="@+id/action_settings"-->
-        <!--android:title="@string/action_settings"-->
-        <!--app:showAsAction="never" />-->
-
 </menu>
