@@ -7,4 +7,10 @@
         android:icon="@drawable/baseline_star_rate_black_18dp"
         android:title="Search"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/magnify"
+        android:title="Search"
+        app:showAsAction="always" />
 </menu>

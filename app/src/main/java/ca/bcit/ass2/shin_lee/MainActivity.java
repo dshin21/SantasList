@@ -8,11 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     EditText lat;
     EditText lng;
     EditText naughty;
+    EditText search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_add:
                 addDialog();
                 return true;
+            case R.id.action_search:
+                searchDialog();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -70,35 +77,76 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean addDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Add a New Person!")
-                .setView(initLayout())
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Map<String, String> userInputs = getAddInputs();
-                        ((DB) helper).add(
-                                userInputs.get("firstName"),
-                                userInputs.get("lastName"),
-                                userInputs.get("DOB"),
-                                userInputs.get("street"),
-                                userInputs.get("city"),
-                                userInputs.get("province"),
-                                userInputs.get("postalCode"),
-                                userInputs.get("country"),
-                                Double.parseDouble(userInputs.get("lat")),
-                                Double.parseDouble(userInputs.get("lng")),
-                                userInputs.get("naughty"));
-                        setChildren();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
+                .setTitle("Add a New Children!")
+                .setView(initAddLayout())
+                .setPositiveButton("Add", (dialog, whichButton) -> {
+                            Map<String, String> userInputs = getAddInputs();
+                            ((DB) helper).add(
+                                    userInputs.get("firstName"),
+                                    userInputs.get("lastName"),
+                                    userInputs.get("DOB"),
+                                    userInputs.get("street"),
+                                    userInputs.get("city"),
+                                    userInputs.get("province"),
+                                    userInputs.get("postalCode"),
+                                    userInputs.get("country"),
+                                    Double.parseDouble(userInputs.get("lat")),
+                                    Double.parseDouble(userInputs.get("lng")),
+                                    userInputs.get("naughty"));
+                            setChildren();
+                        }
+                )
+                .setNegativeButton("Cancel", (dialog, whichButton) -> {
                 })
                 .show();
         return true;
     }
 
-    LinearLayout initLayout() {
+    public boolean searchDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Search By Category!")
+                .setView(initSearchLayout())
+                .setPositiveButton("Add", (dialog, whichButton) -> {
+
+                })
+                .setNegativeButton("Cancel", (dialog, whichButton) -> {
+                })
+                .show();
+        return true;
+    }
+
+    LinearLayout initSearchLayout() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        Spinner dropDown = new Spinner(this);
+
+        List<String> list = new ArrayList<String>();
+        list.add("First Name");
+        list.add("Last Name");
+        list.add("Birthday");
+        list.add("Street");
+        list.add("City");
+        list.add("Province");
+        list.add("Postal Code");
+        list.add("Country");
+        list.add("Latitude");
+        list.add("Longitude");
+        list.add("Is Naughty?");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dropDown.setAdapter(dataAdapter);
+        layout.addView(dropDown);
+
+        search = new EditText(this);
+        search.setHint("Enter Value");
+        layout.addView(search);
+
+        return layout;
+    }
+
+    LinearLayout initAddLayout() {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 

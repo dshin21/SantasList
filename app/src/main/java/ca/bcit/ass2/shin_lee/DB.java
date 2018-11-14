@@ -109,7 +109,6 @@ public class DB extends SQLiteOpenHelper {
                     getIsNaughty().get(i)));
         }
 
-
         return children;
     }
 
