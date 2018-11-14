@@ -10,11 +10,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private ListView children_list_view;
     SQLiteOpenHelper helper;
     EditText firstName;
     EditText lastName;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        children_list_view = findViewById(R.id.children);
+        setChildren();
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         helper = new DB(this);
@@ -57,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setChildren() {
+        DB db = new DB(this);
+        Child.children = db.get();
+        if (Child.children != null) {
+            ChildrenAdaptor adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
+            children_list_view.setAdapter(adapter);
+        }
+    }
+
     public boolean addDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Add a New Person!")
@@ -76,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                                 Double.parseDouble(userInputs.get("lat")),
                                 Double.parseDouble(userInputs.get("lng")),
                                 userInputs.get("naughty"));
+                        setChildren();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -167,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
 //TODO:
-    // listview + array adaptor
-        // think about how to display the info
-    // search
-        // think about how to display the info
+// listview + array adaptor
+// think about how to display the info
+// search
+// think about how to display the info
