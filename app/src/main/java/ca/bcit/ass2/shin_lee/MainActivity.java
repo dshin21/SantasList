@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_search:
                 searchDialog();
+            case R.id.action_back:
+                setChildren();
+
             default:
                 return super.onOptionsItemSelected(item);
         }
