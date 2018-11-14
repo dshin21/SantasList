@@ -21,9 +21,15 @@ public class ChildrenAdaptor extends ArrayAdapter<Child> {
             view = LayoutInflater.from(getContext()).inflate(R.layout.list_layout, parent, false);
 
         Child child = getItem(position);
-
+        String isNaughty = child.isNaughty.equals("1") ? "Y" : "N";
         TextView childFirstName = view.findViewById(R.id.child);
-        childFirstName.setText(child.getFirstName());
+        childFirstName.setText(
+                child.getFirstName() + " " + child.getLastName()
+                        + "\n" + child.getDOB()
+                        + "\n" + child.getStreet() + ", " + child.getCity() + ", " + child.getProvince() + " " + child.getPostalCode() + ", " + child.getCountry()
+                        + "\n" + child.getLat() + ", " + child.getLng()
+                        + "\n" + isNaughty
+        );
 
         return view;
     }

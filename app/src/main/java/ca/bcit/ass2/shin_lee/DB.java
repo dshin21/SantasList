@@ -87,8 +87,6 @@ public class DB extends SQLiteOpenHelper {
         Child temp = new Child();
 
         temp.getChildren().add(new Child(firstName, lastName, DOB, street, city, province, postalCode, country, lat, lng, isNaughty));
-//        MainActivity.adapter.notifyDataSetChanged();
-
 
         return id;
     }

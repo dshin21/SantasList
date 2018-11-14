@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         helper = new DB(this);
-
     }
 
     @Override
@@ -52,10 +51,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
+            case R.id.action_add:
                 addDialog();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
