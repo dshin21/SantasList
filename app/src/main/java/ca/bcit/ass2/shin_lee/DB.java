@@ -147,4 +147,93 @@ public class DB extends SQLiteOpenHelper {
 
         return result;
     }
+
+    public ArrayList<ArrayList<String>> search(String searchCriteria, String userInput) {
+        ArrayList<String> allQueries = new ArrayList<>();
+        for (String column : attributes)
+            allQueries.add("SELECT " + column + " FROM " + "SANTASLIST" + " WHERE " + convertCriteraToColumn(searchCriteria) + " = \"" + userInput + "\"");
+
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
+
+        for (int i = 0; i < allQueries.size(); ++i) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(allQueries.get(i), null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    temp.add(cursor.getString(cursor.getColumnIndex(attributes.get(i))));
+                } while (cursor.moveToNext());
+            }
+            result.add(temp);
+            temp = new ArrayList<>();
+        }
+
+        db.close();
+
+        return result;
+    }
+
+    public ArrayList<Child> getSearchValues(String searchCriteria, String userInput) {
+        ArrayList<Child> children = new ArrayList<>();
+        ArrayList<ArrayList<String>> pp = search(searchCriteria, userInput);
+        for (int i = 0; i < pp.get(0).size(); ++i) {
+            children.add(new Child(
+                    pp.get(0).get(i),
+                    pp.get(1).get(i),
+                    pp.get(2).get(i),
+                    pp.get(3).get(i),
+                    pp.get(4).get(i),
+                    pp.get(5).get(i),
+                    pp.get(6).get(i),
+                    pp.get(7).get(i),
+                    Double.parseDouble(pp.get(8).get(i)),
+                    Double.parseDouble(pp.get(9).get(i)),
+                    pp.get(10).get(i)));
+        }
+
+        return children;
+    }
+
+    String convertCriteraToColumn(String searchCritera) {
+        String converted = "";
+        switch (searchCritera) {
+            case "First Name":
+                converted = "FirstName";
+                break;
+            case "Last Name":
+                converted = "LastName";
+                break;
+            case "Birthday":
+                converted = "BirthDate";
+                break;
+            case "Street":
+                converted = "Street";
+                break;
+            case "City":
+                converted = "City";
+                break;
+            case "Province":
+                converted = "Province";
+                break;
+            case "Postal Code":
+                converted = "PostalCode";
+                break;
+            case "Country":
+                converted = "Country";
+                break;
+            case "Latitude":
+                converted = "Latitude";
+                break;
+            case "Longitude":
+                converted = "Longitude";
+                break;
+            case "Is Naughty?":
+                converted = "IsNaughty";
+                break;
+            default:
+                break;
+        }
+        return converted;
+    }
 }

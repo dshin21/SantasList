@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    ChildrenAdaptor adapter;
     private ListView children_list_view;
     SQLiteOpenHelper helper;
     EditText firstName;
@@ -33,7 +37,10 @@ public class MainActivity extends AppCompatActivity {
     EditText lat;
     EditText lng;
     EditText naughty;
+
     EditText search;
+    Spinner dropDown;
+    String searchCriteria;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         DB db = new DB(this);
         Child.children = db.get();
         if (Child.children != null) {
-            ChildrenAdaptor adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
+            adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
             children_list_view.setAdapter(adapter);
         }
     }
@@ -106,8 +113,10 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Search By Category!")
                 .setView(initSearchLayout())
-                .setPositiveButton("Add", (dialog, whichButton) -> {
-
+                .setPositiveButton("Search", (dialog, whichButton) -> {
+                    Child.children = ((DB) helper).getSearchValues(searchCriteria, search.getText().toString());
+                    adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
+                    children_list_view.setAdapter(adapter);
                 })
                 .setNegativeButton("Cancel", (dialog, whichButton) -> {
                 })
@@ -119,9 +128,9 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        Spinner dropDown = new Spinner(this);
+        dropDown = new Spinner(this);
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("First Name");
         list.add("Last Name");
         list.add("Birthday");
@@ -133,6 +142,19 @@ public class MainActivity extends AppCompatActivity {
         list.add("Latitude");
         list.add("Longitude");
         list.add("Is Naughty?");
+
+        dropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                searchCriteria = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -225,9 +247,3 @@ public class MainActivity extends AppCompatActivity {
         return userInputs;
     }
 }
-
-//TODO:
-// listview + array adaptor
-// think about how to display the info
-// search
-// think about how to display the info
