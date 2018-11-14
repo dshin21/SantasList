@@ -10,20 +10,30 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class DB extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "SANTASLIST.sqlite";
     private static final int DB_VERSION = 1;
-    private Context context;
     private SQLiteDatabase db;
+    private ArrayList<String> attributes;
 
 
     public DB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
-        this.context = context;
         db = this.getWritableDatabase();
+        attributes = new ArrayList<>();
+        attributes.add("FirstName");
+        attributes.add("LastName");
+        attributes.add("BirthDate");
+        attributes.add("Street");
+        attributes.add("City");
+        attributes.add("Province");
+        attributes.add("PostalCode");
+        attributes.add("Country");
+        attributes.add("Latitude");
+        attributes.add("Longitude");
+        attributes.add("IsNaughty");
     }
 
     @Override
@@ -93,105 +103,48 @@ public class DB extends SQLiteOpenHelper {
 
     public ArrayList<Child> get() {
         ArrayList<Child> children = new ArrayList<>();
-
-        for (int i = 0; i < getFirstName().size(); ++i) {
+        ArrayList<ArrayList<String>> pp = getHelper();
+        for (int i = 0; i < pp.get(0).size(); ++i) {
             children.add(new Child(
-                    getFirstName().get(i),
-                    getLastName().get(i),
-                    getDOB().get(i),
-                    getStreet().get(i),
-                    getCity().get(i),
-                    getProvince().get(i),
-                    getPostalCode().get(i),
-                    getCountry().get(i),
-                    Double.parseDouble(getLatitude().get(i)),
-                    Double.parseDouble(getLongitude().get(i)),
-                    getIsNaughty().get(i)));
+                    pp.get(0).get(i),
+                    pp.get(1).get(i),
+                    pp.get(2).get(i),
+                    pp.get(3).get(i),
+                    pp.get(4).get(i),
+                    pp.get(5).get(i),
+                    pp.get(6).get(i),
+                    pp.get(7).get(i),
+                    Double.parseDouble(pp.get(8).get(i)),
+                    Double.parseDouble(pp.get(9).get(i)),
+                    pp.get(10).get(i)));
         }
 
         return children;
     }
 
-    public List<String> getFirstName() {
-        String selectQuery = "SELECT FirstName FROM " + "SANTASLIST";
+    public ArrayList<ArrayList<String>> getHelper() {
+        ArrayList<String> allQueries = new ArrayList<>();
+        for (String column : attributes)
+            allQueries.add("SELECT " + column + " FROM " + "SANTASLIST");
 
-        return getHelper(selectQuery, "FirstName");
-    }
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
 
-    public List<String> getLastName() {
-        String selectQuery = "SELECT LastName FROM " + "SANTASLIST";
+        for (int i = 0; i < allQueries.size(); ++i) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(allQueries.get(i), null);
 
-        return getHelper(selectQuery, "LastName");
-    }
-
-    public List<String> getDOB() {
-        String selectQuery = "SELECT BirthDate FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "BirthDate");
-    }
-
-    public List<String> getStreet() {
-        String selectQuery = "SELECT Street FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "Street");
-    }
-
-    public List<String> getCity() {
-        String selectQuery = "SELECT City FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "City");
-    }
-
-    public List<String> getProvince() {
-        String selectQuery = "SELECT Province FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "Province");
-    }
-
-    public List<String> getPostalCode() {
-        String selectQuery = "SELECT PostalCode FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "PostalCode");
-    }
-
-    public List<String> getCountry() {
-        String selectQuery = "SELECT Country FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "Country");
-    }
-
-    public List<String> getLatitude() {
-        String selectQuery = "SELECT Latitude FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "Latitude");
-    }
-
-    public List<String> getLongitude() {
-        String selectQuery = "SELECT Longitude FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "Longitude");
-    }
-
-    public List<String> getIsNaughty() {
-        String selectQuery = "SELECT IsNaughty FROM " + "SANTASLIST";
-
-        return getHelper(selectQuery, "IsNaughty");
-    }
-
-    public List<String> getHelper(String selectQuery, String columnName) {
-        List<String> temp = new ArrayList<>();
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                temp.add(cursor.getString(cursor.getColumnIndex(columnName)));
-            } while (cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    temp.add(cursor.getString(cursor.getColumnIndex(attributes.get(i))));
+                } while (cursor.moveToNext());
+            }
+            result.add(temp);
+            temp = new ArrayList<>();
         }
 
         db.close();
 
-        return temp;
+        return result;
     }
 }
