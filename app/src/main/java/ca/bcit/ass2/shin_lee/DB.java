@@ -101,6 +101,29 @@ public class DB extends SQLiteOpenHelper {
         return id;
     }
 
+    public boolean remove(String[] args){
+        if (args.length != 11){
+            return false;
+        }
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE FROM SANTASLIST WHERE");
+        sql.append(" FirstName = " + "\'" + args[0] + "\'");
+        sql.append(" AND LastName = " + "\'" + args[1]+ "\'");
+        sql.append(" AND BirthDate = " + "\'"+ args[2]+ "\'");
+        sql.append(" AND Street = " + "\'"+ args[3]+ "\'");
+        sql.append(" AND City = " + "\'"+ args[4]+ "\'");
+        sql.append(" AND Province = " + "\'"+ args[5]+ "\'");
+        sql.append(" AND PostalCode = " + "\'"+ args[6]+ "\'");
+        sql.append(" AND Country = " + "\'"+ args[7]+ "\'");
+        sql.append(" AND Latitude = " + args[8]);
+        sql.append(" AND Longitude = " + args[9]);
+        sql.append(" AND IsNaughty = " + Integer.valueOf(args[10].charAt(0))%2);
+        //sql.append(", DateCreated = " + "\'"+ args[+ "\'");
+
+        db.execSQL(sql.toString());
+        return true;
+    }
+
     public ArrayList<Child> get() {
         ArrayList<Child> children = new ArrayList<>();
         ArrayList<ArrayList<String>> pp = getHelper();

@@ -19,4 +19,14 @@
         android:icon="@drawable/baseline_refresh_black_18dp"
         android:title="Search"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_update"
+        android:title="update"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_remove"
+        android:title="remove"
+        app:showAsAction="never"/>
 </menu>

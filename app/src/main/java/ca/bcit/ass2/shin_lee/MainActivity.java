@@ -16,6 +16,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
     Spinner dropDown;
     String searchCriteria;
 
+    private static final int SELECT_DO_NOTHING = 0;
+    private static final int SELECT_UPDATE = 1;
+    private static final int SELECT_REMOVE = 2;
+
+    private static int selectMode = SELECT_DO_NOTHING;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +62,44 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         helper = new DB(this);
+        children_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (selectMode) {
+                    case SELECT_UPDATE:
+                        showToast("UPDATE UPDATE");
+
+                        selectMode = SELECT_DO_NOTHING;
+                        break;
+                    case SELECT_REMOVE:
+                        TextView textView = (TextView) view.findViewById(R.id.child);
+                        String text = textView.getText().toString();
+                        String[] textArr = text.split(",|\n");
+
+                        for (int i = 0; i< textArr.length; i++){
+                            textArr[i] = textArr[i].replace(",", "");
+                            if (textArr[i].charAt(0) == ' '){
+                                textArr[i] = textArr[i].substring(1, textArr[i].length());
+                            }
+                        }
+
+                        for (String s : textArr){
+                            Log.d("kieran", s + "\n");
+                        }
+                        Log.d("kieran", textArr.length + "\n");
+
+                        boolean bool = ((DB) helper).remove(textArr);
+                        Log.d("kieran", new Boolean(bool).toString());
+                        setChildren();
+                        selectMode = SELECT_DO_NOTHING;
+                        break;
+                    case SELECT_DO_NOTHING:
+                    default:
+                        break;
+
+                }
+            }
+        });
     }
 
     @Override
@@ -66,20 +115,34 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_add:
                 addDialog();
                 return true;
-            case R.id.action_search:
+            case R.id.action_search: //Daniel is this case supposed to cascade into the next one?
                 searchDialog();
             case R.id.action_back:
                 setChildren();
+                return super.onOptionsItemSelected(item);
 
+            case R.id.action_update:
+                showToast("update");
+                selectMode = SELECT_UPDATE;
+                return super.onOptionsItemSelected(item);
+            case R.id.action_remove:
+                showToast("remove");
+                selectMode = SELECT_REMOVE;
+                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showToast(String text){
+        Toast.makeText(this, "Please select the entry to " + text, Toast.LENGTH_SHORT).show();
     }
 
     public void setChildren() {
         DB db = new DB(this);
         Child.children = db.get();
         if (Child.children != null) {
+            //FOR UPDATING THE ARRAY LIST
             adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
             children_list_view.setAdapter(adapter);
         }
