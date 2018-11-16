@@ -67,11 +67,27 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (selectMode) {
                     case SELECT_UPDATE:
-                        showToast("UPDATE UPDATE");
+                    {
+                        TextView textView = (TextView) view.findViewById(R.id.child);
+                        String text = textView.getText().toString();
+                        String[] textArr = text.split(",|\n");
 
+                        for (int i = 0; i< textArr.length; i++){
+                            textArr[i] = textArr[i].replace(",", "");
+                            if (textArr[i].charAt(0) == ' '){
+                                textArr[i] = textArr[i].substring(1, textArr[i].length());
+                            }
+                        }
+
+                        for (String s : textArr){
+                            Log.d("kieran", s + "\n");
+                        }
+                        Log.d("kieran", textArr.length + "\n");
+
+                        updateDialog(textArr);
                         selectMode = SELECT_DO_NOTHING;
-                        break;
-                    case SELECT_REMOVE:
+                        break;}
+                    case SELECT_REMOVE:{
                         TextView textView = (TextView) view.findViewById(R.id.child);
                         String text = textView.getText().toString();
                         String[] textArr = text.split(",|\n");
@@ -92,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("kieran", new Boolean(bool).toString());
                         setChildren();
                         selectMode = SELECT_DO_NOTHING;
-                        break;
+                        break;}
                     case SELECT_DO_NOTHING:
                     default:
                         break;
@@ -183,6 +199,29 @@ public class MainActivity extends AppCompatActivity {
                     Child.children = ((DB) helper).getSearchValues(searchCriteria, search.getText().toString());
                     adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
                     children_list_view.setAdapter(adapter);
+                })
+                .setNegativeButton("Cancel", (dialog, whichButton) -> {
+                })
+                .show();
+        return true;
+    }
+
+    public boolean updateDialog(String[] queryArgs) {
+        if (queryArgs.length != 11){
+            return false;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Select Category to Update")
+                .setView(initSearchLayout())
+                .setPositiveButton("Update", (dialog, whichButton) -> {
+                    String updateValue = search.getText().toString();
+                    String updateColumn = searchCriteria;
+                    Log.d("Kieran", updateValue + " , " + updateColumn);
+                    ((DB)helper).update(queryArgs, updateColumn, updateValue);
+                    setChildren();
+//                    Child.children = ((DB) helper).getSearchValues(searchCriteria, search.getText().toString());
+//                    adapter = new ChildrenAdaptor(MainActivity.this, Child.children);
+//                    children_list_view.setAdapter(adapter);
                 })
                 .setNegativeButton("Cancel", (dialog, whichButton) -> {
                 })
