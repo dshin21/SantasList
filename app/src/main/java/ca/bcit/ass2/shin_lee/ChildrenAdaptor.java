@@ -24,9 +24,9 @@ public class ChildrenAdaptor extends ArrayAdapter<Child> {
         String isNaughty = child.isNaughty.equals("1") ? "Y" : "N";
         TextView childFirstName = view.findViewById(R.id.child);
         childFirstName.setText(
-                child.getFirstName() + " " + child.getLastName()
+                child.getFirstName() + ", " + child.getLastName()
                         + "\n" + child.getDOB()
-                        + "\n" + child.getStreet() + ", " + child.getCity() + ", " + child.getProvince() + " " + child.getPostalCode() + ", " + child.getCountry()
+                        + "\n" + child.getStreet() + ", " + child.getCity() + ", " + child.getProvince() + ", " + child.getPostalCode() + ", " + child.getCountry()
                         + "\n" + child.getLat() + ", " + child.getLng()
                         + "\n" + isNaughty
         );
