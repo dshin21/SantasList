@@ -1,6 +1,5 @@
 package ca.bcit.ass2.shin_lee;
 
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,60 +60,58 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         helper = new DB(this);
-        children_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (selectMode) {
-                    case SELECT_UPDATE:
-                    {
-                        TextView textView = (TextView) view.findViewById(R.id.child);
-                        String text = textView.getText().toString();
-                        String[] textArr = text.split(",|\n");
+        children_list_view.setOnItemClickListener((parent, view, position, id) -> {
+            switch (selectMode) {
+                case SELECT_UPDATE:
+                {
+                    TextView textView = (TextView) view.findViewById(R.id.child);
+                    String text = textView.getText().toString();
+                    String[] textArr = text.split(",|\n");
 
-                        for (int i = 0; i< textArr.length; i++){
-                            textArr[i] = textArr[i].replace(",", "");
-                            if (textArr[i].charAt(0) == ' '){
-                                textArr[i] = textArr[i].substring(1, textArr[i].length());
-                            }
+                    for (int i = 0; i< textArr.length; i++){
+                        textArr[i] = textArr[i].replace(",", "");
+                        if (textArr[i].charAt(0) == ' '){
+                            textArr[i] = textArr[i].substring(1, textArr[i].length());
                         }
+                    }
 
-                        for (String s : textArr){
-                            Log.d("kieran", s + "\n");
+                    for (String s : textArr){
+                        Log.d("kieran", s + "\n");
+                    }
+                    Log.d("kieran", textArr.length + "\n");
+
+                    updateDialog(textArr);
+                    selectMode = SELECT_DO_NOTHING;
+                    break;}
+                case SELECT_REMOVE:{
+                    TextView textView = (TextView) view.findViewById(R.id.child);
+                    String text = textView.getText().toString();
+                    String[] textArr = text.split(",|\n");
+
+                    for (int i = 0; i< textArr.length; i++){
+                        textArr[i] = textArr[i].replace(",", "");
+                        if (textArr[i].charAt(0) == ' '){
+                            textArr[i] = textArr[i].substring(1, textArr[i].length());
                         }
-                        Log.d("kieran", textArr.length + "\n");
+                    }
 
-                        updateDialog(textArr);
-                        selectMode = SELECT_DO_NOTHING;
-                        break;}
-                    case SELECT_REMOVE:{
-                        TextView textView = (TextView) view.findViewById(R.id.child);
-                        String text = textView.getText().toString();
-                        String[] textArr = text.split(",|\n");
+                    for (String s : textArr){
+                        Log.d("kieran", s + "\n");
+                    }
+                    Log.d("kieran", textArr.length + "\n");
 
-                        for (int i = 0; i< textArr.length; i++){
-                            textArr[i] = textArr[i].replace(",", "");
-                            if (textArr[i].charAt(0) == ' '){
-                                textArr[i] = textArr[i].substring(1, textArr[i].length());
-                            }
-                        }
-
-                        for (String s : textArr){
-                            Log.d("kieran", s + "\n");
-                        }
-                        Log.d("kieran", textArr.length + "\n");
-
-                        boolean bool = ((DB) helper).remove(textArr);
-                        Log.d("kieran", new Boolean(bool).toString());
-                        setChildren();
-                        selectMode = SELECT_DO_NOTHING;
-                        break;}
-                    case SELECT_DO_NOTHING:
-                    default:
-                        break;
-
-                }
+                    boolean bool = ((DB) helper).remove(textArr);
+                    Log.d("kieran", new Boolean(bool).toString());
+                    setChildren();
+                    selectMode = SELECT_DO_NOTHING;
+                    break;}
+                case SELECT_DO_NOTHING:
+                default:
+                    break;
             }
         });
+
+
     }
 
     @Override
@@ -165,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean addDialog() {
+
         new AlertDialog.Builder(this)
                 .setTitle("Add a New Children!")
                 .setView(initAddLayout())

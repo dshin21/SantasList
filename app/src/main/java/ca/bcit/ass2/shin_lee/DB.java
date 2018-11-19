@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ public class DB extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private SQLiteDatabase db;
     private ArrayList<String> attributes;
+    private static boolean isInitialized = false;
 
 
     public DB(Context context) {
@@ -35,6 +35,15 @@ public class DB extends SQLiteOpenHelper {
         attributes.add("Latitude");
         attributes.add("Longitude");
         attributes.add("IsNaughty");
+        if (!isInitialized) {
+            isInitialized = true;
+            add("Daniel", "Johnson", "2013-02-12", "Random", "Vancouver", "BC", "V5I 7H2", "Canada", 123.2, 54.8, "N");
+            add("Tom", "Ling", "2013-02-12", "Random", "Vancouver", "BC", "V5I 7H2", "Canada", 123.2, 54.8, "Y");
+            add("Pat", "Ray", "2013-02-12", "Random", "Vancouver", "BC", "V5I 7H2", "Canada", 123.2, 54.8, "N");
+            add("Bob", "Matthew", "2013-02-12", "Random", "Vancouver", "BC", "V5I 7H2", "Canada", 123.2, 54.8, "Y");
+            add("Kim", "Richard", "2013-02-12", "Random", "Vancouver", "BC", "V5I 7H2", "Canada", 123.2, 54.8, "Y");
+        }
+
     }
 
     @Override
@@ -102,31 +111,31 @@ public class DB extends SQLiteOpenHelper {
         return id;
     }
 
-    public boolean remove(String[] args){
-        if (args.length != 11){
+    public boolean remove(String[] args) {
+        if (args.length != 11) {
             return false;
         }
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM SANTASLIST WHERE");
         sql.append(" FirstName = " + "\'" + args[0] + "\'");
-        sql.append(" AND LastName = " + "\'" + args[1]+ "\'");
-        sql.append(" AND BirthDate = " + "\'"+ args[2]+ "\'");
-        sql.append(" AND Street = " + "\'"+ args[3]+ "\'");
-        sql.append(" AND City = " + "\'"+ args[4]+ "\'");
-        sql.append(" AND Province = " + "\'"+ args[5]+ "\'");
-        sql.append(" AND PostalCode = " + "\'"+ args[6]+ "\'");
-        sql.append(" AND Country = " + "\'"+ args[7]+ "\'");
+        sql.append(" AND LastName = " + "\'" + args[1] + "\'");
+        sql.append(" AND BirthDate = " + "\'" + args[2] + "\'");
+        sql.append(" AND Street = " + "\'" + args[3] + "\'");
+        sql.append(" AND City = " + "\'" + args[4] + "\'");
+        sql.append(" AND Province = " + "\'" + args[5] + "\'");
+        sql.append(" AND PostalCode = " + "\'" + args[6] + "\'");
+        sql.append(" AND Country = " + "\'" + args[7] + "\'");
         sql.append(" AND Latitude = " + args[8]);
         sql.append(" AND Longitude = " + args[9]);
-        sql.append(" AND IsNaughty = " + Integer.valueOf(args[10].charAt(0))%2);
+        sql.append(" AND IsNaughty = " + Integer.valueOf(args[10].charAt(0)) % 2);
         //sql.append(", DateCreated = " + "\'"+ args[+ "\'");
 
         db.execSQL(sql.toString());
         return true;
     }
 
-    public boolean update(String[] query, String column, String value){
-        if (query.length != 11){
+    public boolean update(String[] query, String column, String value) {
+        if (query.length != 11) {
             return false;
         }
         String colName = convertCriteraToColumn(column);
@@ -134,29 +143,29 @@ public class DB extends SQLiteOpenHelper {
         //lat, lng, and isNaughty do not need quotes
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE SANTASLIST SET ");
-        switch (colName){
+        switch (colName) {
             case "Latitude":
             case "Longitude":
                 sql.append(colName + " = " + value);
                 break;
             case "IsNaughty":
-                sql.append(colName + " = " + Integer.valueOf(value.charAt(0))%2);
+                sql.append(colName + " = " + Integer.valueOf(value.charAt(0)) % 2);
                 break;
             default:
                 sql.append(colName + " = " + "\'" + value + "\'");
         }
         sql.append(" WHERE");
         sql.append(" FirstName = " + "\'" + query[0] + "\'");
-        sql.append(" AND LastName = " + "\'" + query[1]+ "\'");
-        sql.append(" AND BirthDate = " + "\'"+ query[2]+ "\'");
-        sql.append(" AND Street = " + "\'"+ query[3]+ "\'");
-        sql.append(" AND City = " + "\'"+ query[4]+ "\'");
-        sql.append(" AND Province = " + "\'"+ query[5]+ "\'");
-        sql.append(" AND PostalCode = " + "\'"+ query[6]+ "\'");
-        sql.append(" AND Country = " + "\'"+ query[7]+ "\'");
+        sql.append(" AND LastName = " + "\'" + query[1] + "\'");
+        sql.append(" AND BirthDate = " + "\'" + query[2] + "\'");
+        sql.append(" AND Street = " + "\'" + query[3] + "\'");
+        sql.append(" AND City = " + "\'" + query[4] + "\'");
+        sql.append(" AND Province = " + "\'" + query[5] + "\'");
+        sql.append(" AND PostalCode = " + "\'" + query[6] + "\'");
+        sql.append(" AND Country = " + "\'" + query[7] + "\'");
         sql.append(" AND Latitude = " + query[8]);
         sql.append(" AND Longitude = " + query[9]);
-        sql.append(" AND IsNaughty = " + Integer.valueOf(query[10].charAt(0))%2);
+        sql.append(" AND IsNaughty = " + Integer.valueOf(query[10].charAt(0)) % 2);
 
         db.execSQL(sql.toString());
         return true;
